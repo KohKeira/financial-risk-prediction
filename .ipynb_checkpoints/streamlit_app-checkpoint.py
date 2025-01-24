@@ -12,44 +12,6 @@ required_columns = [
     'Debt-to-Income Ratio', 'Assets Value', 'Number of Dependents', 'Previous Defaults'
 ]
 
-# Define the data dictionary with equal-length lists
-data_dict = {
-    "Column": [
-        "Age", "Gender", "Education Level", "Income", "Credit Score", "Loan Amount", 
-        "Loan Purpose", "Employment Status", "Years at Current Job", "Payment History",
-        "Debt-to-Income Ratio", "Assets Value", "Number of Dependents", "Previous Defaults", "Risk Rating (Target)"
-    ],
-    "Description": [
-        "The age of the individual, influencing financial stability.", 
-        "Gender of the individual.", 
-        "Highest level of education achieved.", 
-        "Annual income in USD, representing the individual's earning capacity.", 
-        "Numeric value indicating creditworthiness.", 
-        "The amount of loan requested by the individual.", 
-        "The purpose of the loan.", 
-        "Employment situation of the individual.", 
-        "Duration of employment at the current job.", 
-        "Historical payment performance.", 
-        "Ratio of debt to income, indicating financial leverage and risk.", 
-        "Total value of assets owned by the individual.", 
-        "Number of dependents supported by the individual.", 
-        "Number of previous loan defaults.", 
-        "Target column categorizing financial risk into Low, Medium, or High."
-    ]
-}
-
-# Create an empty DataFrame with only column headers
-template_df = pd.DataFrame(columns=required_columns)
-
-# Cache the CSV conversion
-@st.cache_data
-def convert_df_to_csv(df):
-    # Convert the DataFrame to CSV format
-    return df.to_csv(index=False).encode("utf-8")
-
-# Generate the CSV from the template DataFrame
-csv_template = convert_df_to_csv(template_df)
-
 def sync_slider_input_values(key):
     st.session_state[f"{key}_slider"] = st.session_state[f"{key}_input"]
 
@@ -80,14 +42,6 @@ st.sidebar.header('User Input Parameters')
 def user_input_features():
 
     with st.sidebar.expander("Upload Data"):
-        
-        st.download_button(
-            label="Download Input Template",
-            data=csv_template,
-            file_name="input_template.csv",
-            mime="text/csv",
-        )
-
         uploaded_file = st.file_uploader("Upload only a sample with column headers",type=['csv'])
     
     with st.sidebar.expander("Input Data Manually"):
@@ -188,8 +142,6 @@ if df is not None:
         st.markdown('''
         :red[Oh no! It seems like the risk level is high!] :rotating_light:''')
         
-st.subheader('Data Dictionary',divider='grey')
-data_dict_df = pd.DataFrame(data_dict)
+    st.write(prediction)
 
-# Display the data dictionary
-st.table(data_dict_df)
+
